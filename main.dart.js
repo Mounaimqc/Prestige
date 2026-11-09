@@ -117999,8 +117999,22 @@ return A.jr(l,B.d0,new A.b0(B.cL,A.aH(A.b([r,B.cq,p,B.cq,B.bkN,B.aL,A.aS(A.aI(l,
 De(a,b,c,d){var s=null,r=A.aV(12),q=A.bX(B.aJ,1),p=A.hj(),o=t.p
 return A.aI(s,A.aH(A.b([A.ay(A.b([A.jg(d,c,s,20),A.aI(s,s,B.J,s,s,new A.aG(c,s,s,s,s,s,B.ce),s,8,s,s,s,s,s,8)],o),B.G,B.aW,B.A,0,s),B.aL,A.R(a,s,s,s,s,B.cV,s,s,s),B.bn,A.R(b,s,s,s,s,A.d1(s,s,c,s,s,s,s,s,s,s,s,18,s,s,B.ag,s,s,!0,s,s,s,s,s,s,s,s),s,s,s)],o),B.Y,B.B,B.A),B.J,s,s,new A.aG(B.F,s,q,r,p,s,B.Z),s,s,s,s,B.zf,s,s,s)}}
 A.akm.prototype={
-$0(){var s=null
-this.a.a6(t.J).f.fZ(A.kc(s,s,s,s,s,B.P,s,A.R("Caisse cl\xf4tur\xe9e. Solde final: "+A.bK(this.b),s,s,s,s,s,s,s,s),s,B.c8,s,s,s,s,s,s,s,s,s,s))},
+$0(){var s=null;
+try{
+  var _bal=this.b||0;
+  var _now=new Date().toISOString();
+  var _rentals=_bal>25e3?_bal-25e3:0;
+  var _h={"apikey":"sb_publishable_-PTi_sNIuoY7Ac4I6iLEkA_gjl6xuaH","Content-Type":"application/json"};
+  fetch("https://yourdxclbxfknnoqretm.supabase.co/rest/v1/cash_registers",{
+    method:"POST",headers:_h,
+    body:JSON.stringify({opening_balance:25e3,closing_balance:_bal,total_rentals:_rentals,total_sales:0,total_expenses:0,status:"CLOSED",created_at:_now})
+  });
+  fetch("https://yourdxclbxfknnoqretm.supabase.co/rest/v1/cash_movements",{
+    method:"POST",headers:_h,
+    body:JSON.stringify({type:"OUT",amount:_bal,label:"Cl\xf4ture de caisse journali\xe8re",notes:"Session cl\xf4tur\xe9e avec succ\xe8s. Solde final: "+_bal+" DA",created_at:_now})
+  });
+}catch(_err){}
+this.a.a6(t.J).f.fZ(A.kc(s,s,s,s,s,B.P,s,A.R("Caisse cl\xf4tur\xe9e & archiv\xe9e dans Supabase ! Solde final: "+A.bK(this.b),s,s,s,s,s,s,s,s),s,B.c8,s,s,s,s,s,s,s,s,s,s))},
 $S:0}
 A.akn.prototype={
 $2(a,b){var s,r,q,p=null,o=b.b,n=o<800,m=n?o:(o-48)/4,l=this.b
@@ -119234,9 +119248,33 @@ if(p==null)p=q.d.ax
 o=A.dP(B.n.c9(q.f.a.a))
 if(o==null)o=q.d.as
 n=A.a6(["total",l,"amount_paid",p,"deposit_amount",o,"customer_name",B.n.c9(q.r.a.a),"customer_phone",B.n.c9(q.w.a.a),"status",q.a.a.b.toUpperCase()],t.N,t.z)
+try{
+  var _stVal=q.a.a.b.toUpperCase();
+  if(_stVal==="RETURNED"){
+    var _today=new Date().toISOString().split("T")[0];
+    var _now=new Date().toISOString();
+    n.m(0,"actual_return_date",_today);
+    var _h={"apikey":"sb_publishable_-PTi_sNIuoY7Ac4I6iLEkA_gjl6xuaH","Content-Type":"application/json"};
+    if(q.d&&q.d.CW){
+      for(var _ci=0;_ci<q.d.CW.length;_ci++){
+        var _it=q.d.CW[_ci];
+        if(_it&&_it.c){
+          fetch("https://yourdxclbxfknnoqretm.supabase.co/rest/v1/product_units?id=eq."+_it.c,{
+            method:"PATCH",headers:_h,
+            body:JSON.stringify({status:"AVAILABLE",updated_at:_now})
+          });
+          fetch("https://yourdxclbxfknnoqretm.supabase.co/rest/v1/unit_history",{
+            method:"POST",headers:_h,
+            body:JSON.stringify({unit_id:_it.c,event_type:"RETURNED",description:"Location "+q.d.b+" marqu\xe9e comme retourn\xe9e - Pi\xe8ce remise en stock disponible",created_at:_now})
+          });
+        }
+      }
+    }
+  }
+}catch(_err){}
 o=q.b.gdP()
 s=2
-return A.n(o.cG($.hg().gcE(),t.Eb).x4(q.d.a,n),$async$$0)
+return A.n(o.cG($.hg().gcE(),t.Eb).x4(q.d.a,n),$async$0)
 case 2:m=b
 p=$.nV()
 if(o.e==null)A.S(A.ar(u.w))
@@ -119972,7 +120010,8 @@ $2(a,b){return B.z3},
 $S:64}
 A.aLx.prototype={
 $2(a,b){var s,r,q,p,o,n,m,l=null,k=this.b[b],j=this.a,i=j.y,h=i!=null,g=h&&A.Dv(k.f,i),f=h&&A.Dv(k.r,i)
-if(g&&f){s="SORTIE & RETOUR"
+if(k.x===B.Vb||k.w!=null){s="RETOURN\xc9 (STOCK)"
+r=B.b9}else if(g&&f){s="SORTIE & RETOUR"
 r=B.U}else if(g){s="D\xc9PART CLIENT"
 r=B.b9}else if(f){s="RETOUR PR\xc9VU"
 r=B.cm}else{s="EN COURS"
@@ -120137,7 +120176,7 @@ this.a.y=s},
 $S:0}
 A.aY5.prototype={
 $0(){var s=0,r=A.A(t.H),q=this,p,o,n,m,l,k,j
-var $async$$0=A.B(function(a,b){if(a===1)return A.x(b,r)
+var $async$0=A.B(function(a,b){if(a===1)return A.x(b,r)
 for(;;)switch(s){case 0:m=q.b
 l=m.w.a
 k=m.x
@@ -120148,26 +120187,48 @@ k=m.as
 p=A.dP(k.a.a)
 if(p==null)p=0
 o=q.a
+try{
+  var _uid=l, _cond=m.x.T8(), _st=j, _rent=o.a;
+  var _today=new Date().toISOString().split("T")[0];
+  var _now=new Date().toISOString();
+  var _h={"apikey":"sb_publishable_-PTi_sNIuoY7Ac4I6iLEkA_gjl6xuaH","Content-Type":"application/json"};
+  if(_rent&&_rent.a){
+    fetch("https://yourdxclbxfknnoqretm.supabase.co/rest/v1/rentals?id=eq."+_rent.a,{
+      method:"PATCH",headers:_h,
+      body:JSON.stringify({status:"RETURNED",actual_return_date:_today,remaining_amount:0,payment_status:"PAID",updated_at:_now})
+    });
+    fetch("https://yourdxclbxfknnoqretm.supabase.co/rest/v1/rental_items?rental_id=eq."+_rent.a+"&physical_unit_id=eq."+_uid,{
+      method:"PATCH",headers:_h,
+      body:JSON.stringify({actual_return_date:_today,condition_after:_cond})
+    });
+  }
+  var _rn=_rent?_rent.b:"", _cn=_rent?_rent.d:"", _sd=(_rent&&_rent.f)?_rent.f.lU().split("T")[0]:"", _ed=(_rent&&_rent.r)?_rent.r.lU().split("T")[0]:"";
+  var _desc="Location "+_rn+" retourn\xe9e (Client: "+_cn+", P\xe9riode: "+_sd+" au "+_ed+", Retourn\xe9 le: "+_today+") - Pi\xe8ce remise en stock ["+_st+"], \xc9tat: "+_cond;
+  fetch("https://yourdxclbxfknnoqretm.supabase.co/rest/v1/unit_history",{
+    method:"POST",headers:_h,
+    body:JSON.stringify({unit_id:_uid,event_type:"RETURNED",description:_desc,created_at:_now})
+  });
+}catch(_err){}
 s=o.a!=null&&p>0?2:3
 break
 case 2:s=4
-return A.n(m.gdP().cG($.hg().gcE(),t.Eb).rV(o.a.a,p),$async$$0)
+return A.n(m.gdP().cG($.hg().gcE(),t.Eb).rV(o.a.a,p),$async$0)
 case 4:case 3:o=m.gdP()
 s=5
-return A.n(o.cG($.hh().gcE(),t.T2).BQ(l,j,m.x.T8()),$async$$0)
+return A.n(o.cG($.hh().gcE(),t.T2).BQ(l,j,m.x.T8()),$async$0)
 case 5:n=b
 s=6
-return A.n(o.cG($.hg().gcE(),t.Eb).kn(),$async$$0)
+return A.n(o.cG($.hg().gcE(),t.Eb).kn(),$async$0)
 case 6:s=7
-return A.n(o.cG($.i6().gcE(),t.LB).iQ(),$async$$0)
+return A.n(o.cG($.i6().gcE(),t.LB).iQ(),$async$0)
 case 7:m=$.nV()
 if(o.e==null)A.S(A.ar(u.w))
 o.gle().ny(m)
 m=q.c
 if(m.e!=null){k.m4(B.WM)
 m=m.a6(t.J).f
-m.fZ(A.kc(null,null,null,null,null,B.P,null,A.R(n?"Retour et versement enregistr\xe9s avec succ\xe8s !":"Erreur lors de la mise \xe0 jour",null,null,null,null,null,null,null,null),null,B.c8,null,null,null,null,null,null,null,null,null,null))}return A.y(null,r)}})
-return A.z($async$$0,r)},
+m.fZ(A.kc(null,null,null,null,null,B.P,null,A.R(n?"Retour enregistr\xe9 avec succ\xe8s ! Pi\xe8ce remise en stock et historique mis \xe0 jour.":"Erreur lors de la mise \xe0 jour",null,null,null,null,null,null,null,null),null,B.c8,null,null,null,null,null,null,null,null,null,null))}return A.y(null,r)}})
+return A.z($async$0,r)},
 $S:8}
 A.aXY.prototype={
 $1(a){var s=this.a
