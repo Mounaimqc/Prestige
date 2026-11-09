@@ -119157,13 +119157,13 @@ return A.aI(p,A.jL(r,A.fM(A.fM(A.b4a(B.b2D,64,64,new A.bj(B.bg,t.rc),o),p,B.V,p,
 $S:731}
 A.aXm.prototype={
 $1(a){var s=this.a.w.toLowerCase()
-return B.n.n(a.b.toLowerCase(),s)||B.n.n(a.d.toLowerCase(),s)||B.n.n(a.e,s)},
+return B.n.n(a.b.toLowerCase(),s)||B.n.n(a.d.toLowerCase(),s)||B.n.n(a.e,s)||(a.CW&&a.CW.length>0&&a.CW[0].d&&B.n.n(a.CW[0].d.toLowerCase(),s))},
 $S:52}
 A.aXn.prototype={
 $0(){return this.a.a2j(this.b)},
 $S:0}
 A.aXo.prototype={
-$1(a){var s,r,q,p,o,n=this,m=null,l="dd/MM/yyyy",k=a.ay,j=k>0,i=A.fb(A.R(a.b,m,m,m,m,B.er,m,m,m)),h=A.fb(A.R(a.d,m,m,m,m,B.bfE,m,m,m)),g=A.fb(A.R(a.e,m,m,m,m,B.cr,m,m,m)),f=A.fb(A.R(A.jM(l,m).ef(a.f),m,m,m,m,B.iZ,m,m,m)),e=A.fb(A.R(A.jM(l,m).ef(a.r),m,m,m,m,B.X6,m,m,m)),d=A.fb(A.R(A.bK(a.Q),m,m,m,m,B.db,m,m,m))
+$1(a){var s,r,q,p,o,n=this,m=null,l="dd/MM/yyyy",k=a.ay,j=k>0,sn=(a.CW&&a.CW.length>0&&a.CW[0].d)?" • S/N: "+a.CW[0].d:"",i=A.fb(A.R(a.b+sn,m,m,m,m,B.er,m,m,m)),h=A.fb(A.R(a.d,m,m,m,m,B.bfE,m,m,m)),g=A.fb(A.R(a.e,m,m,m,m,B.cr,m,m,m)),f=A.fb(A.R(A.jM(l,m).ef(a.f),m,m,m,m,B.iZ,m,m,m)),e=A.fb(A.R(A.jM(l,m).ef(a.r),m,m,m,m,B.X6,m,m,m)),d=A.fb(A.R(A.bK(a.Q),m,m,m,m,B.db,m,m,m))
 k=j?A.bK(k):"Pay\xe9"
 s=t.p
 k=A.b([A.R(k,m,m,m,m,A.d1(m,m,j?B.bb:B.b9,m,m,m,m,m,m,m,m,13,m,m,B.ag,m,m,!0,m,m,m,m,m,m,m,m),m,m,m)],s)
@@ -119176,12 +119176,12 @@ p=A.aV(6)
 o=A.bX(B.cx.cD(0.5),1)
 p=A.fb(A.aI(m,A.R(a.x.gnC(),m,m,m,m,B.X2,m,m,m),B.J,m,m,new A.aG(q,m,o,p,m,m,B.Z),m,m,m,m,B.i6,m,m,m))
 s=A.b([],s)
-if(j)s.push(A.e3(m,m,m,B.Aq,m,m,new A.aXh(n.a,n.b,a),m,m,m,"Ajouter Versement"))
-s.push(A.e3(m,m,m,B.a7I,m,m,new A.aXi(a),m,m,m,"Imprimer Contrat PDF"))
 q=n.a
 o=n.b
 s.push(A.e3(m,m,m,B.a8i,m,m,new A.aXj(q,o,a),m,m,m,"Modifier le contrat"))
 s.push(A.e3(m,m,m,B.a82,m,m,new A.aXk(q,o,a),m,m,m,"Supprimer / Annuler le contrat"))
+if(j)s.push(A.e3(m,m,m,B.Aq,m,m,new A.aXh(n.a,n.b,a),m,m,m,"Ajouter Versement"))
+s.push(A.e3(m,m,m,B.a7I,m,m,new A.aXi(a),m,m,m,"Imprimer Contrat PDF"))
 return A.b49(A.b([i,h,g,f,e,d,k,r,p,A.fb(A.ay(s,B.G,B.B,B.aF,0,m))],t.sa),m)},
 $S:732}
 A.aXg.prototype={
